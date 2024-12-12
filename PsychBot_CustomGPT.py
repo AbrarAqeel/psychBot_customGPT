@@ -50,7 +50,7 @@ st.markdown('<div class="description">Guiding you towards inner peace and clarit
 
 # Sidebar Configuration
 st.sidebar.header("Configuration")
-st.sidebar.image("https://imgur.com/fUXkJLy", use_container_width=True, caption="Psych Bot Logo")
+st.sidebar.image("https://imgur.com/fUXkJLy", use_container_width=True, caption="By Affan & Abrar")
 st.sidebar.markdown("Choose settings below:")
 
 # Check if the selected model is stored in session state
