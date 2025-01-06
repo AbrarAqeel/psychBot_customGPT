@@ -7,6 +7,12 @@ api_key = "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"
 # Initialize the Inference Client with the API key
 client = InferenceClient(token=api_key)
 
+# Function to determine if a query is related to mental health/psychology
+def is_relevant_to_mental_health(query):
+    keywords = ["mental health", "psychology", "anxiety", "depression", "therapy", "mindfulness", "stress", "emotions", "counseling", "well-being"]
+    query_lower = query.lower()
+    return any(keyword in query_lower for keyword in keywords)
+
 # Streamlit App
 st.markdown(
     """
@@ -83,18 +89,23 @@ if st.button("Send", key="send_button", use_container_width=True):
         # Append user input to conversation history
         st.session_state.messages.append({"role": "user", "content": user_input})
 
-        # Generate response from the selected model
-        try:
-            response = client.chat.completions.create(
-                model=model_choice,
-                messages=st.session_state.messages,
-                max_tokens=500
-            )
-            # Extract model's response
-            model_reply = response["choices"][0]["message"]["content"]
+        if is_relevant_to_mental_health(user_input):
+            # Generate response from the selected model
+            try:
+                response = client.chat.completions.create(
+                    model=model_choice,
+                    messages=st.session_state.messages,
+                    max_tokens=500
+                )
+                # Extract model's response
+                model_reply = response["choices"][0]["message"]["content"]
+                st.session_state.messages.append({"role": "assistant", "content": model_reply, "model": model_choice})
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+        else:
+            # Respond with default message for unrelated queries
+            model_reply = "I'm sorry, I can only answer questions related to mental health or psychology."
             st.session_state.messages.append({"role": "assistant", "content": model_reply, "model": model_choice})
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
 
 # Display Chat History
 st.subheader("Conversation")
